@@ -9,6 +9,7 @@ services:
         ELK_VERSION: $ELK_VERSION
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - /etc/localtime:/etc/localtime:ro
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -25,8 +26,10 @@ services:
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+      # - /etc/localtime:/etc/localtime:ro
     ports:
       - "5000:5000"
+      - "5044:5044"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
@@ -41,6 +44,13 @@ services:
         ELK_VERSION: $ELK_VERSION
     volumes:
       - ./kibana/config/:/usr/share/kibana/config:ro
+      # - /etc/localtime:/etc/localtime:ro
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
+    # command: >
+    #     sh -c "ln -snf /usr/share/zoneinfo/$TZ /etc/localtime &&
+    #     echo $TZ > /etc/timezone &&
+    #     exec my-main-application"
     ports:
       - "5601:5601"
     networks:
